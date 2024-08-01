@@ -1,8 +1,12 @@
 package main
 
 import (
+	"fmt"
+
 	core "github.com/ThisGuyCodes1106/go-todo-app/internal/todo"
 )
+
+var console = fmt.Println
 
 func main() {
 	
@@ -21,6 +25,6 @@ func main() {
 		ItemsList: []core.ToDoListItem{todo1, todo2},
 	}
 	
-	core.PrintToDoListItemTitles(todoList.ItemsList)
+	console(todoList.OutputListJSON())
 }
 

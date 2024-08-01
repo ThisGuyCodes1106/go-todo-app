@@ -1,6 +1,9 @@
 package todo
 
-import "fmt"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 var console = fmt.Println
 
@@ -19,9 +22,15 @@ func (t *ToDoList) AddItem(item ToDoListItem) {
 func (t *ToDoList) Items(item ToDoListItem) []ToDoListItem {
 	return t.ItemsList
 }
-
-func PrintToDoListItemTitles(todoList []ToDoListItem) {
-	for _, todoItem := range todoList {
+func (t *ToDoList) PrintToDoListItemTitles() {
+	for _, todoItem := range t.ItemsList {
 		console(todoItem.Title)
 	}
+}
+func (t *ToDoList) OutputListJSON() (string, error) {
+	jsonList, err := json.Marshal(t.ItemsList)
+	if err != nil {
+		return "", err
+	}
+	return string(jsonList), nil
 }

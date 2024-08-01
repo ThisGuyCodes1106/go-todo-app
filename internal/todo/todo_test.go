@@ -28,7 +28,7 @@ func TestToDoListFunctions(t *testing.T) {
 			return fmt.Fprintln(&buf, a...)
 		}
 
-		PrintToDoListItemTitles(testList.ItemsList)
+		testList.PrintToDoListItemTitles()
 
 		got := buf.String()
 		want := "Learn Go\nBuild a TODO App\n"
@@ -38,15 +38,18 @@ func TestToDoListFunctions(t *testing.T) {
 		}
 	})
 	t.Run("add item to the todo list", func(t *testing.T) {
+		testList2 := ToDoList{
+			ItemsList: []ToDoListItem{testItem1, testItem2},
+		}
 		newItem := ToDoListItem{
 			Title: "Showcase App", 
 			Description: "Showcase the final TODO App to senior Go Devs", 
 			Status: "Not Started",
 		}
 
-		testList.AddItem(newItem)
+		testList2.AddItem(newItem)
 
-		got := testList.ItemsList
+		got := testList2.ItemsList
 		want := []ToDoListItem{
 			testItem1,
 			testItem2,
@@ -60,6 +63,17 @@ func TestToDoListFunctions(t *testing.T) {
 			if got[i] != item {
 				t.Errorf("Got item %d: %+v, Want item %d: %+v", i, got[i], i, item)
 			}
+		}
+	})
+	t.Run("print a list of todo items as in JSON format", func(t *testing.T) {
+		got, err := testList.OutputListJSON()
+		want := `[{"Title":"Learn Go","Description":"Read Go documentation and practice examples","Status":"In Progress"},{"Title":"Build a TODO App","Description":"Create a TODO app using Go","Status":"Not Started"}]`
+		
+		if err != nil {
+			t.Fatalf("OutputListJSON() error = %v", err)
+		}
+		if got != want {
+			t.Errorf("Got: %q, Want: %q", got, want)
 		}
 	})
 }
