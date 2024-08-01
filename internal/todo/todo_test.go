@@ -78,21 +78,37 @@ func TestToDoListFunctions(t *testing.T) {
 		}
 	})
 	t.Run("check JSON file has been created", func(t *testing.T) {
-		// Use a relative path for the JSON file
-		filename := "test_todoList.json"
-
 		// Create the JSON file
-		err := testList.CreateAndPopulateJSONFile(filename)
+		err := testList.CreateAndPopulateJSONFile()
 		if err != nil {
 			t.Fatalf("Error creating JSON file: %v", err)
 		}
-		defer os.Remove(filename) // Clean up the file after the test
+		defer os.Remove("ToDoList.json") // Clean up the file after the test
 
 		// Check if the JSON file exists
-		jsonFile, err := os.Open(filename)
+		jsonFile, err := os.Open("ToDoList.json")
 		if err != nil {
 			t.Fatalf("Error opening JSON file: %v", err)
 		}
 		defer jsonFile.Close()
+	})
+	t.Run("read list of todo items from JSON file and output to console", func(t *testing.T) {
+		//create json file with todo list
+		//read from list
+		//output to console/buffer
+		//clear and delete json file
+		var buf bytes.Buffer
+		console = func(a ...interface{}) (n int, err error) {
+			return fmt.Fprintln(&buf, a...)
+		}
+
+		testList.PrintToDoListItemTitles()
+
+		got := buf.String()
+		want := "Learn Go\nBuild a TODO App\n"
+
+		if got != want {
+			t.Errorf("Got: %q, Want: %q", got, want)
+		}
 	})
 }

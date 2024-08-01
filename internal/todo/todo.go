@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"reflect"
 )
 
 var console = fmt.Println
@@ -35,9 +36,13 @@ func (t *ToDoList) OutputListJSON() (string, error) {
 	}
 	return string(jsonList), nil
 }
-func (t *ToDoList) CreateAndPopulateJSONFile(fileName string) error {
+func (t *ToDoList) CreateAndPopulateJSONFile() error {
+	//Get the name of the ToDo list structure
+	todoListType := reflect.TypeOf(*t)
+	structName := todoListType.Name() + ".json"
+
 	jsonData, _ := json.Marshal(t.ItemsList)
-	err := os.WriteFile(fileName, jsonData, 0644)
+	err := os.WriteFile(structName, jsonData, 0644)
 	if err != nil {
 		return err
 	}
