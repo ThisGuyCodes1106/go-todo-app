@@ -3,6 +3,7 @@ package todo
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 )
 
 var console = fmt.Println
@@ -19,7 +20,7 @@ type ToDoListItem struct {
 func (t *ToDoList) AddItem(item ToDoListItem) {
 	t.ItemsList = append(t.ItemsList, item)
 }
-func (t *ToDoList) Items(item ToDoListItem) []ToDoListItem {
+func (t *ToDoList) Items() []ToDoListItem {
 	return t.ItemsList
 }
 func (t *ToDoList) PrintToDoListItemTitles() {
@@ -33,4 +34,12 @@ func (t *ToDoList) OutputListJSON() (string, error) {
 		return "", err
 	}
 	return string(jsonList), nil
+}
+func (t *ToDoList) CreateAndPopulateJSONFile(fileName string) error {
+	jsonData, _ := json.Marshal(t.ItemsList)
+	err := os.WriteFile(fileName, jsonData, 0644)
+	if err != nil {
+		return err
+	}
+	return nil
 }

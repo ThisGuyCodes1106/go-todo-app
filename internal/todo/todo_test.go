@@ -3,6 +3,7 @@ package todo
 import (
 	"bytes"
 	"fmt"
+	"os"
 	"testing"
 )
 
@@ -75,5 +76,23 @@ func TestToDoListFunctions(t *testing.T) {
 		if got != want {
 			t.Errorf("Got: %q, Want: %q", got, want)
 		}
+	})
+	t.Run("check JSON file has been created", func(t *testing.T) {
+		// Use a relative path for the JSON file
+		filename := "test_todoList.json"
+
+		// Create the JSON file
+		err := testList.CreateAndPopulateJSONFile(filename)
+		if err != nil {
+			t.Fatalf("Error creating JSON file: %v", err)
+		}
+		defer os.Remove(filename) // Clean up the file after the test
+
+		// Check if the JSON file exists
+		jsonFile, err := os.Open(filename)
+		if err != nil {
+			t.Fatalf("Error opening JSON file: %v", err)
+		}
+		defer jsonFile.Close()
 	})
 }

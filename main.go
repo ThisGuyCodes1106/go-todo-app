@@ -25,6 +25,7 @@ func main() {
 		ItemsList: []core.ToDoListItem{todo1, todo2},
 	}
 	
-	console(todoList.OutputListJSON())
+
+	todoList.CreateAndPopulateJSONFile("todoList.json")
 }
 
