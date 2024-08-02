@@ -2,10 +2,9 @@ package todo
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
-	"io"
 	"os"
+	"reflect"
 	"testing"
 )
 
@@ -93,30 +92,14 @@ func TestToDoListFunctions(t *testing.T) {
 		}
 		defer jsonFile.Close()
 	})
-	t.Run("read list of todo items from JSON file and output to console", func(t *testing.T) {
-		var testList3 ToDoList
-		
-		jsonFile, err := os.Open("ToDoList.json")
+	t.Run("read list of todo items from JSON file and output to console V2", func(t *testing.T) {
+		got, err := ReadJSONFile()
+		want := testList
 		if err != nil {
-			t.Fatalf("Error opening JSON file: %v", err)
+			t.Fatalf("Error: %v", err)
 		}
-		defer jsonFile.Close()
-
-		byteValue, _ := io.ReadAll(jsonFile)
-		json.Unmarshal(byteValue, &testList3)
-
-		var buf bytes.Buffer
-		console = func(a ...interface{}) (n int, err error) {
-			return fmt.Fprintln(&buf, a...)
-		}
-
-		testList3.PrintToDoListItemTitles()
-
-		got := buf.String()
-		want := "Learn Go\nBuild a TODO App\n"
-
-		if got != want {
-			t.Errorf("Got: %q, Want: %q", got, want)
+		if !reflect.DeepEqual(got, want) { 
+			t.Errorf("got %v want %v", got, want)
 		}
 	})
 }
