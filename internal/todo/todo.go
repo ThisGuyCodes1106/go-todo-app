@@ -3,34 +3,33 @@ package todo
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"reflect"
 )
 
 var console = fmt.Println
 
+
+//////////  ToDoList Struct and Methods //////////
 type ToDoList struct {
-	ItemsList []ToDoListItem
+	ToDoList []ToDoListItem `json:"ToDoList"`
 }
 type ToDoListItem struct {
-	Title string
-	Description string
-	Status string
+	Title string `json:"Title"`
+	Description string `json:"Description"`
+	Status string `json:"Status"`
 }
-// Adds an item to the ToDoList
 func (t *ToDoList) AddItem(item ToDoListItem) {
-	t.ItemsList = append(t.ItemsList, item)
-}
-func (t *ToDoList) Items() []ToDoListItem {
-	return t.ItemsList
+	t.ToDoList = append(t.ToDoList, item)
 }
 func (t *ToDoList) PrintToDoListItemTitles() {
-	for _, todoItem := range t.ItemsList {
+	for _, todoItem := range t.ToDoList {
 		console(todoItem.Title)
 	}
 }
 func (t *ToDoList) OutputListJSON() (string, error) {
-	jsonList, err := json.Marshal(t.ItemsList)
+	jsonList, err := json.Marshal(t)
 	if err != nil {
 		return "", err
 	}
@@ -41,10 +40,27 @@ func (t *ToDoList) CreateAndPopulateJSONFile() error {
 	todoListType := reflect.TypeOf(*t)
 	structName := todoListType.Name() + ".json"
 
-	jsonData, _ := json.Marshal(t.ItemsList)
+	jsonData, _ := json.Marshal(t)
 	err := os.WriteFile(structName, jsonData, 0644)
 	if err != nil {
 		return err
 	}
 	return nil
+}
+
+
+////////// Core Functions //////////
+func ReadJSONFile() (ToDoList, error) {
+	var tempList ToDoList
+
+	jsonFile, err := os.Open("ToDoList.json")
+	if err != nil {
+		return tempList, err
+	}
+	defer jsonFile.Close()
+	
+	byteValue, _ := io.ReadAll(jsonFile)
+	json.Unmarshal(byteValue, &tempList)
+
+	return tempList, nil
 }

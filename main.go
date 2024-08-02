@@ -18,13 +18,18 @@ func main() {
 	todo2 := core.ToDoListItem{
 		Title:       "Build a TODO App",
 		Description: "Create a TODO app using Go",
+		Status:      "In Progress",
+	}
+	todo3 := core.ToDoListItem{
+		Title:       "Get on BET365 Project",
+		Description: "Join BET365 as a consultant and join their 5-a-side group",
 		Status:      "Not Started",
 	}
 
 	todoList := core.ToDoList{
-		ItemsList: []core.ToDoListItem{todo1, todo2},
+		ToDoList: []core.ToDoListItem{todo1, todo2, todo3},
 	}
 	
 	todoList.CreateAndPopulateJSONFile()
+	console(core.ReadJSONFile())
 }
-

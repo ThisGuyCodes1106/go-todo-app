@@ -2,7 +2,9 @@ package todo
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
+	"io"
 	"os"
 	"testing"
 )
@@ -20,7 +22,7 @@ func TestToDoListFunctions(t *testing.T) {
 	}
 	
 	testList := ToDoList{
-		ItemsList: []ToDoListItem{testItem1, testItem2},
+		ToDoList: []ToDoListItem{testItem1, testItem2},
 	}
 	t.Run("print a list of todo item titles", func(t *testing.T) {
 		// Redirect stdout to a buffer
@@ -40,7 +42,7 @@ func TestToDoListFunctions(t *testing.T) {
 	})
 	t.Run("add item to the todo list", func(t *testing.T) {
 		testList2 := ToDoList{
-			ItemsList: []ToDoListItem{testItem1, testItem2},
+			ToDoList: []ToDoListItem{testItem1, testItem2},
 		}
 		newItem := ToDoListItem{
 			Title: "Showcase App", 
@@ -50,7 +52,7 @@ func TestToDoListFunctions(t *testing.T) {
 
 		testList2.AddItem(newItem)
 
-		got := testList2.ItemsList
+		got := testList2.ToDoList
 		want := []ToDoListItem{
 			testItem1,
 			testItem2,
@@ -68,7 +70,7 @@ func TestToDoListFunctions(t *testing.T) {
 	})
 	t.Run("print a list of todo items as in JSON format", func(t *testing.T) {
 		got, err := testList.OutputListJSON()
-		want := `[{"Title":"Learn Go","Description":"Read Go documentation and practice examples","Status":"In Progress"},{"Title":"Build a TODO App","Description":"Create a TODO app using Go","Status":"Not Started"}]`
+		want := `{"ToDoList":[{"Title":"Learn Go","Description":"Read Go documentation and practice examples","Status":"In Progress"},{"Title":"Build a TODO App","Description":"Create a TODO app using Go","Status":"Not Started"}]}`
 		
 		if err != nil {
 			t.Fatalf("OutputListJSON() error = %v", err)
@@ -83,7 +85,6 @@ func TestToDoListFunctions(t *testing.T) {
 		if err != nil {
 			t.Fatalf("Error creating JSON file: %v", err)
 		}
-		defer os.Remove("ToDoList.json") // Clean up the file after the test
 
 		// Check if the JSON file exists
 		jsonFile, err := os.Open("ToDoList.json")
@@ -93,16 +94,23 @@ func TestToDoListFunctions(t *testing.T) {
 		defer jsonFile.Close()
 	})
 	t.Run("read list of todo items from JSON file and output to console", func(t *testing.T) {
-		//create json file with todo list
-		//read from list
-		//output to console/buffer
-		//clear and delete json file
+		var testList3 ToDoList
+		
+		jsonFile, err := os.Open("ToDoList.json")
+		if err != nil {
+			t.Fatalf("Error opening JSON file: %v", err)
+		}
+		defer jsonFile.Close()
+
+		byteValue, _ := io.ReadAll(jsonFile)
+		json.Unmarshal(byteValue, &testList3)
+
 		var buf bytes.Buffer
 		console = func(a ...interface{}) (n int, err error) {
 			return fmt.Fprintln(&buf, a...)
 		}
 
-		testList.PrintToDoListItemTitles()
+		testList3.PrintToDoListItemTitles()
 
 		got := buf.String()
 		want := "Learn Go\nBuild a TODO App\n"
