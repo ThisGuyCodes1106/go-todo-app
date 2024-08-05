@@ -1,3 +1,3 @@
 module github.com/ThisGuyCodes1106/go-todo-app
 
-go 1.20
+go 1.22.5
