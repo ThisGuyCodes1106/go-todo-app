@@ -6,6 +6,8 @@ import (
 	"io"
 	"os"
 	"reflect"
+
+	uuid "github.com/satori/go.uuid"
 )
 
 var console = fmt.Println
@@ -14,13 +16,16 @@ var console = fmt.Println
 //////////  ToDoList Struct and Methods //////////
 type ToDoList struct {
 	ToDoList []ToDoListItem `json:"ToDoList"`
+	NextID int `json:"NextID"`
 }
 type ToDoListItem struct {
 	Title string `json:"Title"`
 	Description string `json:"Description"`
 	Status string `json:"Status"`
+	ID uuid.UUID `json:"UUID"`
 }
 func (t *ToDoList) AddItem(item ToDoListItem) {
+	item.ID = uuid.NewV4()
 	t.ToDoList = append(t.ToDoList, item)
 }
 func (t *ToDoList) PrintToDoListItemTitles() {
