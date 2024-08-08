@@ -69,7 +69,6 @@ func (td ToDoList) DeleteListItem(id uuid.UUID) {
 	delete(td, id)
 }
 
-
 type ListItem struct {
 	Description string
 	Status ItemStatus
