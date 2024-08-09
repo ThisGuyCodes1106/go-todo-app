@@ -1,23 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Todo List</title>
     <link rel="stylesheet" href="/static/styles.css">
 </head>
+
 <body>
+
     <h1>Todo List</h1>
-    
+
+
+
     <h2>Add New Item</h2>
     <form action="/add" method="post">
         <input type="text" name="description" required placeholder="Enter new todo item">
         <button type="submit">Add Item</button>
     </form>
 
-    <h2>Todo Items</h2>
-    <ul>
-        {{range $id, $item := .}}
+
+    <div class="box-shadow">
+        <h2>Todo Items</h2>
+        <ul>
+            {{range $id, $item := .}}
             <li>
                 <form action="/edit" method="post">
                     <input type="hidden" name="id" value="{{$id}}">
@@ -34,9 +41,11 @@
                     <button type="submit">Delete</button>
                 </form>
             </li>
-        {{else}}
+            {{else}}
             <li>No items in the todo list</li>
-        {{end}}
-    </ul>
+            {{end}}
+        </ul>
+    </div>
 </body>
+
 </html>
