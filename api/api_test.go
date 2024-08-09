@@ -3,6 +3,8 @@ package api
 import (
 	"net/http"
 	"net/http/httptest"
+	"net/url"
+	"strings"
 	"testing"
 
 	core "github.com/ThisGuyCodes1106/go-todo-app/ToDoCore"
@@ -25,8 +27,28 @@ func TestIndexHandler(t *testing.T) {
 		IndexHandler(response, request)
 
 		got := response.Body.String()
-		want := "20"
+		want := "Hi"
 
 		testHelpers.AssertStrings(t, got, want)
+	})
+}
+func TestAddItemHandler(t *testing.T) {
+	t.Run("adds an item to the list", func(t *testing.T) {
+		TestToDoList := core.ToDoList{}
+
+		form := url.Values{}
+		form.Add("description", "Test Todo Item")
+
+		// Create a new request with the form data
+		request, err := http.NewRequest(http.MethodPost, "/add", strings.NewReader(form.Encode()))
+		if err != nil {
+			t.Fatal(err)
+		}
+		request.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+
+		response := httptest.NewRecorder()
+		AddItemHandler(response, request)
+		testHelpers.AssertInt(t, response.Code, http.StatusSeeOther)
+		testHelpers.AssertInt(t, len(TestToDoList), 1)
 	})
 }

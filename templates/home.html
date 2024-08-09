@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Todo List</title>
+    <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
     <h1>Todo List</h1>
     
     <h2>Add New Item</h2>
     <form action="/add" method="post">
-        <input type="text" name="description" required>
+        <input type="text" name="description" required placeholder="Enter new todo item">
         <button type="submit">Add Item</button>
     </form>
 
@@ -28,7 +29,7 @@
                     </select>
                     <button type="submit">Update</button>
                 </form>
-                <form action="/delete" method="post" style="display: inline;">
+                <form action="/delete" method="post">
                     <input type="hidden" name="id" value="{{$id}}">
                     <button type="submit">Delete</button>
                 </form>

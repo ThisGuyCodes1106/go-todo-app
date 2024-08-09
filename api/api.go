@@ -1,6 +1,7 @@
 package api
 
 import (
+	"fmt"
 	"log"
 	"net/http"
 	"text/template"
@@ -9,13 +10,14 @@ import (
 	"github.com/google/uuid"
 )
 
+var console = fmt.Println
 var API_ToDoList = core.ToDoList{}
 
 func GenerateSeedData(todoList *core.ToDoList) {
 	seedDataItems := [...]core.ListItem{
 		{Description: "Learn GO", Status: core.ItemStatus(core.InProgress)},
-		{Description: "Get good at GO", Status: core.ItemStatus(core.InProgress)},
-		{Description: "Dream in GO", Status: core.ItemStatus(core.InProgress)},
+		{Description: "Get good at GO", Status: core.ItemStatus(core.NotStarted)},
+		{Description: "Cry due to GO Concurrency", Status: core.ItemStatus(core.Complete)},
 	}
 
 	for _, item := range seedDataItems {
@@ -64,6 +66,7 @@ func AddItemHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	console(API_ToDoList)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
@@ -118,6 +121,7 @@ func UpdateItemHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	console(API_ToDoList)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
@@ -142,6 +146,7 @@ func DeleteItemHandler(w http.ResponseWriter, r *http.Request) {
 
 	API_ToDoList.DeleteListItem(id)
 
+	console(API_ToDoList)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
@@ -150,4 +155,6 @@ func Handlers() {
 	http.HandleFunc("/add", AddItemHandler)
 	http.HandleFunc("/edit", UpdateItemHandler)
 	http.HandleFunc("/delete", DeleteItemHandler)
+
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 }
