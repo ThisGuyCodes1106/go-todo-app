@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List</title>
+</head>
+<body>
+    <h1>Todo List</h1>
+    
+    <h2>Add New Item</h2>
+    <form action="/add" method="post">
+        <input type="text" name="description" required>
+        <button type="submit">Add Item</button>
+    </form>
+
+    <h2>Todo Items</h2>
+    <ul>
+        {{range $id, $item := .}}
+            <li>
+                <form action="/edit" method="post">
+                    <input type="hidden" name="id" value="{{$id}}">
+                    <input type="text" name="description" value="{{$item.Description}}">
+                    <select name="status">
+                        <option value="NotStarted" {{if eq $item.Status 1}}selected{{end}}>Not Started</option>
+                        <option value="InProgress" {{if eq $item.Status 2}}selected{{end}}>In Progress</option>
+                        <option value="Complete" {{if eq $item.Status 3}}selected{{end}}>Complete</option>
+                    </select>
+                    <button type="submit">Update</button>
+                </form>
+                <form action="/delete" method="post" style="display: inline;">
+                    <input type="hidden" name="id" value="{{$id}}">
+                    <button type="submit">Delete</button>
+                </form>
+            </li>
+        {{else}}
+            <li>No items in the todo list</li>
+        {{end}}
+    </ul>
+</body>
+</html>

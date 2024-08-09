@@ -8,6 +8,7 @@ import (
 )
 
 func main() {
-	handler := http.HandlerFunc(api.IndexHandler)
-	log.Fatal(http.ListenAndServe(":5000", handler))
+	api.GenerateSeedData(&api.API_ToDoList)
+	api.Handlers()
+	log.Fatal(http.ListenAndServe(":5000", nil))
 }
